@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragments="head">
+    <meta charset="UTF-8">
+    <title>MCC Ride Shares :: Home</title>
+    <link rel="stylesheet" th:href="@{.../static/style.css}">
+</head>
+<body>
+    <div th:fragments="header">
+        <header th:fragments="header">
+            <h1>MCC Ride Shares</h1>
+        </header>
+        <nav>
+            <a th:href="@{/}">Home</a>
+            <a href="@{/list}">Ride List</a>
+            <a href="@{/register}">Add New Ride</a>
+            <form sec:authorize="isAuthenticated()" method="POST" th:action="@{/logout}">
+                <input type="submit" value="Logout"/>
+            </form>
+        </nav>
+    </div>
+    <footer th:fragments="footer">
+        &copy; MCC Rides and Services<br>
+        <a href="mailto:info@rideshares.com">Contact us</a>
+    </footer>
+</body>
+</html>
