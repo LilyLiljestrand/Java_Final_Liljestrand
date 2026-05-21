@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head}"></head>
+<body id="pageCenter">
+    <div th:replace="~{fragments :: header}"></div>
+    <main>
+        <h2>Modify the Ride</h2>
+        <form method="GET" th:object="${ride}" th:action="@{/view/modify}" enctype="multipart/form-data">
+            Name: <input type="text" th:field="*{name}"/>
+            <span class="validationError"
+                  th:if="${#fields.hasErrors('name')}"
+                  th:errors="*{name}">Name Errors</span><br>
+            <!---->
+            Contact: <input type="text" th:field="*{contact}"/>
+            <span class="validationError"
+                  th:if="${#fields.hasErrors('contact')}"
+                  th:errors="*{contact}">Contact Errors</span><br>
+            <!---->
+            Campus: <select th:field="*{campus}">
+            <option th:each="t: ${RideType}"
+                    th:value="${t}"
+                    th:text="${t}"
+            >Campus</option>
+        </select><br>
+            Time of Class: <input type="text" th:field="*{classTime}"/>
+            <span class="validationError"
+                  th:if="${#fields.hasErrors('classTime')}"
+                  th:errors="*{classTime}">Time Errors</span><br>
+            <!---->
+            Car Model: <input type="text" th:field="*{carModel}"/>
+            <span class="validationError"
+                  th:if="${#fields.hasErrors('carModel')}"
+                  th:errors="*{carModel}">Model Errors</span><br>
+            <!---->
+            Number of Seats: <input type="text" th:field="*{seats}"/>
+            <span class="validationError"
+                  th:if="${#fields.hasErrors('seats')}"
+                  th:errors="*{seats}">Seats Errors</span><br>
+            <!---->
+            Designation Address: <input type="text" th:field="*{address}"/>
+            <span class="validationError"
+                  th:if="${#fields.hasErrors('address')}"
+                  th:errors="*{address}">Address Errors</span><br>
+            <!---->
+            Upload Picture of Car: <input type="file" name="carPhoto"/>
+            <button>Add Ride</button>
+        </form>
+    </main>
+    <footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>
