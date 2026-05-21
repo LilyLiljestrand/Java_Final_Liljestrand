@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head}"></head>
+<body id="pageCenter">
+    <div th:replace="~{fragments :: header}"></div>
+    <main>
+        <div>
+            <div class="filterBox">
+                <h3>Filter or Search for Rides</h3>
+                <form class="itemFilters" method="GET" th:action="@{'/list/search'}">
+                    City <input type="text" name="searchCity"/>
+                    &nbsp; <input type="submit" value="Search Rides"/>
+                </form>
+                <!---->
+                <form class="itemFilters" method="GET" th:action="@{'/list/filter'}">
+                    Campus <select name="filterType">
+                    <option th:each="t : ${RideType}"
+                            th:value="${t}"
+                            th:action="${t}">
+                        Campus</option>
+                </select>
+                    &nbsp; <input type="sumbit" value="Filter Rides"/>
+                </form>
+            </div>
+            <div class="floatLeft">
+                <p sec:authorized="isAuthenticated()">Welcome <span sec:authentication="principal.fullname">fullname</span></p>
+                <h2>List of Rides</h2>
+            </div>
+        </div>
+        <br class="clearImage">
+        <div th:if="${rideDB == null || rideDB.size() == 0}">
+            <p>No rides availables</p>
+        </div>
+        <div th:unless="${rideDB == null || rideDB.size() == 0}">
+            <section th:each="entry: ${rideDB}" th:with="current=${rideDB[entry.key]}">
+                <img class="listRideImage" th:if="${current.hasImage()}" th:src="'data:image' + ${current.carPhoto.getEncoding()} + ';base64' + ${current.carPhoto.getBase64Image()}" width="125" height="125" alt="Image of driver's car"/>
+                <img class="listRideImage" th:unless="${current.hasImage()}" th:src="@{.../static/Images/noimage.png}" width="125" height="125" alt="No image provided"/>
+                <h3><a th:href="@{'/view/current/' + ${entry.key}}" th:text="${current.name}">Name of Driver</a></h3>
+                <p><a th:href="@{'/view/current/' + ${entry.key}}" th:text="">Driver's contact</a></p>
+                <p><a th:href="@{'/view/current/' + ${entry.key}}" th:text="">Class start time</a></p>
+                <p><a th:href="@{'/view/current/' + ${entry.key}}" th:text="">Driver's car model</a></p>
+                <p><a th:href="@{'/view/current/' + ${entry.key}}" th:text="">Number of seats</a></p>
+                <p><a th:href="@{'/view/current/' + ${entry.key}}" th:text="">Designation address</a></p>
+                <p th:text="${current.campus.toString()}">Campus</p>
+            </section>
+            <!---->
+            <div class="listNavigation" th:if="${totalPages > 1}">
+                <!--list of items pages-->
+                <div th:if="${type == 'list'}">
+                    <a th:if="${currentPage != 1}" th:href="@{'/list/' + ${currentPage - 1}}">Prev</a>
+                    <span th:unless="${currentPage != 1}">Prev</span>
+                    <span th:each="page : ${#numbers.sequence(1, totalPages)}">
+                            <a th:if="${currentPage != page}" th:href="@{'/list/' + ${page}}" th:text="${page}">number</a>
+                            <span th:unless="${currentPage != page}" th:text="${page}">no linked current page</span>
+                        </span>
+                    <a th:if="${currentPage < totalPages}" th:href="@{'/list/' + ${currentPage + 1}}">Next</a>
+                    <span th:unless="${currentPage < totalPages}">Next</span>
+                </div>
+                <!--filter list of items pages-->
+                <div th:if="${type == 'filter'}">
+                    <a th:if="${currentPage != 1}" th:href="@{'/list/filter' + ${currentPage - 1} + '?filterType=' + ${filterType}}">Prev</a>
+                    <span th:unless="${currentpage != 1}">Prev</span>
+                    <span th:each="page : ${#number.sequence(1, totalPages)}">
+                            <a th:if="${currentPage != page}" th:href="@{'/list/filter/' + ${page} + '?filterType' + ${filterType}}" th:text="${page}">number</a>
+                            <span th:unless="${currentPage != page}" th:text="${page}">no linked current page</span>
+                        </span>
+                    <a th:if="${currentPage < totalPages}" th:href="@{'/list/filter/' + ${currentPage - 1} + '?filterType' + ${filterType}}">Next</a>
+                    <span th:unless="${currentPage < totalPages}">Next</span>
+                </div>
+                <!--search list of items pages-->
+                <div th:if="${type = 'search'}">
+                    <a th:if="${currentPage != 1}" th:href="@{'/list/search/' + ${currentPage - 1} + '?searchCity=' + ${searchCity}}">Prev</a>
+                    <span th:unless="${currentPage != 1}">Prev</span>
+                    <span th:each="page : ${#numbers.sequence(1, totalPages)}">
+                            <a th:if="${currentPage != page}" th:href="@{'/list/search/' + ${page} + '?searchCity=' + ${searchCity}}" th:text="${page}">number</a>
+                            <span th:unless="${currentPage != page}" th:text="${page}">no linked current page</span>
+                        </span>
+                    <a th:if="${currentPage < totalPages}" th:href="@{'/list/search/' + ${currentPage - 1} + '?searchCity=' + ${searchCity}}">Next</a>
+                    <span th:unless="${currentPage < totalPages}">Next</span>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer th:replace="~{fragments :: footer}"></footer>
+</body>
+</html>
